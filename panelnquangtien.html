@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NQuangTien Premium Super Luxury Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #05070c;
+            --card-bg: #0d1321;
+            --card-border: #1f2937;
+            --primary: #38bdf8;
+            --accent: #ec4899;
+            --lightning-color: #00f0ff;
+            --text-main: #f3f4f6;
+            --text-sub: #9ca3af;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #020408;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- KHUNG CHỨA APP CHÍNH --- */
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            background-color: var(--bg-dark);
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0, 240, 255, 0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        /* VIỀN SÉT CHẠY XOAY QUANH NỀN */
+        .app-container::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(transparent, var(--lightning-color), transparent 30%, transparent, var(--accent), transparent 70%);
+            animation: lightningRotate 4s linear infinite;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .app-inner-layer {
+            position: absolute;
+            top: 3px; left: 3px; right: 3px; bottom: 3px;
+            background: var(--bg-dark);
+            border-radius: 12px;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .app-content-wrapper {
+            position: relative;
+            z-index: 5;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        /* KHU VỰC THÔNG BÁO TOAST XẾP CHỒNG CAO CẤP */
+        .toast-container {
+            position: fixed;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999999999999 !important;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 85%;
+            max-width: 380px;
+            pointer-events: none;
+        }
+
+        .toast-box {
+            background: rgba(13, 19, 33, 0.95);
+            border: 1.5px solid var(--lightning-color);
+            backdrop-filter: blur(10px);
+            color: #ffffff;
+            padding: 14px 18px;
+            border-radius: 14px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 20px rgba(0, 240, 255, 0.4);
+            animation: toastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            transition: all 0.3s ease;
+        }
+
+        .toast-box i {
+            color: var(--lightning-color);
+            text-shadow: 0 0 8px var(--lightning-color);
+        }
+
+        /* --- AVATAR NỬA TÓC TRẮNG NỬA TÂM ẢO CYBERPUNK --- */
+        .cyber-avatar-wrapper {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #000000;
+            position: relative;
+            border: 2px solid var(--card-border);
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.3);
+            margin-bottom: 20px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Bên Trái: Đầu người tóc trắng */
+        .avatar-left-human {
+            position: absolute;
+            left: 0; top: 0; width: 50%; height: 100%;
+            background: linear-gradient(135deg, #2a2d32, #111);
+            overflow: hidden;
+        }
+        /* Sợi tóc trắng vẽ nghệ thuật */
+        .avatar-left-human::before {
+            content: ''; position: absolute; top: 15px; left: 10px; width: 35px; height: 50px;
+            background: #ffffff; clip-path: polygon(100% 0%, 60% 40%, 80% 45%, 30% 80%, 50% 85%, 0% 100%, 40% 60%, 20% 55%);
+            filter: drop-shadow(0 0 2px #fff);
+        }
+        /* Khuôn mặt ẩn */
+        .avatar-left-human::after {
+            content: ''; position: absolute; bottom: 15px; right: 0; width: 25px; height: 35px;
+            background: #e0a98c; border-radius: 0 0 0 15px;
+        }
+
+        /* Bên Phải: Hệ thống tâm ảo Crosshair phát sáng */
+        .avatar-right-crosshair {
+            position: absolute;
+            right: 0; top: 0; width: 50%; height: 100%;
+            background: #020408;
+            border-left: 2px solid var(--lightning-color);
+        }
+        /* Vòng tròn tâm ảo */
+        .avatar-right-crosshair::before {
+            content: ''; position: absolute; left: -15px; top: 35px; width: 30px; height: 30px;
+            border: 2px dashed var(--lightning-color); border-radius: 50%;
+            animation: rotateCrosshair 6s linear infinite;
+        }
+        /* Chấm tâm đỏ rực giữa viền cắt */
+        .avatar-right-crosshair::after {
+            content: ''; position: absolute; left: -3px; top: 47px; width: 6px; height: 6px;
+            background: var(--accent); border-radius: 50%; box-shadow: 0 0 8px var(--accent);
+        }
+
+        /* --- MÀN HÌNH LOGIN KEY --- */
+        #login-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            flex-grow: 1;
+            z-index: 1000;
+            background: var(--bg-dark);
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            transition: all 0.4s ease-in-out;
+        }
+
+        .brand-title {
+            font-size: 1.8rem; font-weight: 800;
+            background: linear-gradient(to right, #fff, var(--lightning-color), var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        .brand-sub { font-size: 0.75rem; color: var(--text-sub); margin-bottom: 25px; }
+        .login-card { width: 100%; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 24px; padding: 24px; }
+        .input-wrapper { position: relative; display: flex; align-items: center; margin-bottom: 16px; }
+        .input-wrapper i.key-ico { position: absolute; left: 16px; color: var(--text-sub); font-size: 1rem; }
+        
+        .input-wrapper input {
+            width: 100%; background: #05070c; border: 1px solid var(--card-border);
+            padding: 14px 50px; border-radius: 14px; color: #fff; font-size: 0.95rem;
+            font-weight: 600; letter-spacing: 0.5px;
+        }
+        .input-wrapper input:focus { border-color: var(--lightning-color); outline: none;}
+        .input-wrapper .paste-btn { position: absolute; right: 16px; color: var(--lightning-color); cursor: pointer; font-size: 1.1rem; }
+
+        .btn-activate {
+            width: 100%; background: linear-gradient(90deg, #00d2ff, #0040ff); border: none;
+            color: #fff; padding: 15px; border-radius: 14px; font-weight: 700; font-size: 0.95rem;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        .error-box {
+            background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);
+            color: var(--danger); padding: 12px; border-radius: 12px; font-size: 0.8rem;
+            text-align: center; margin-top: 14px; display: none; justify-content: center; gap: 8px;
+        }
+
+        /* --- INTERFACE CHÍNH PANEL --- */
+        #main-app-screen {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+            padding-bottom: 80px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            height: 100vh;
+            width: 100%;
+        }
+
+        .app-header {
+            padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--card-border); background: #05070c;
+        }
+
+        .header-title h1 { font-size: 1.1rem; color: #fff; font-weight: 800; text-transform: uppercase;}
+        .header-title span { font-size: 0.7rem; color: var(--success); display: flex; align-items: center; gap: 5px;}
+        .header-title span::before { content: ''; width: 6px; height: 6px; background: var(--success); border-radius: 50%; display: inline-block; box-shadow: 0 0 6px var(--success);}
+        .login-badge { background: rgba(0, 240, 255, 0.08); border: 1px solid rgba(0, 240, 255, 0.2); color: var(--lightning-color); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; }
+
+        /* KHU VỰC CHỨA CÁC TRANG - KHÓA VUỐT HOÀN TOÀN */
+        .main-pages-viewport {
+            flex: 1;
+            overflow-y: auto;
+            width: 100%;
+            position: relative;
+        }
+
+        .tab-content {
+            display: none;
+            flex-direction: column;
+            padding: 16px;
+            width: 100%;
+        }
+        
+        .tab-content.active-page {
+            display: flex;
+        }
+
+        .section-title { font-size: 0.75rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin: 18px 0 10px; font-weight: 800; display: flex; align-items: center; gap: 6px;}
+
+        /* CHỨC NĂNG MENU */
+        .func-group { display: flex; flex-direction: column; gap: 10px; }
+        .func-item { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
+        .func-left { display: flex; align-items: center; gap: 14px; }
+        .func-left i { font-size: 1.2rem; width: 24px; text-align: center; color: var(--text-sub); }
+        .func-title { font-size: 0.85rem; font-weight: 700; color: var(--text-sub); }
+        .func-desc { font-size: 0.7rem; color: #4b5563; margin-top: 2px; }
+
+        .func-item.enabled { border-color: rgba(0, 240, 255, 0.3); background: rgba(13, 29, 49, 0.4); }
+        .func-item.enabled .func-left i { color: var(--lightning-color); text-shadow: 0 0 8px var(--lightning-color); }
+        .func-item.enabled .func-title { color: #fff; }
+        .func-item.enabled .func-desc { color: var(--text-sub); }
+
+        /* SELECT BRAND CUSTOM */
+        .brand-select-wrapper { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px; padding: 12px; margin-bottom: 12px; }
+        .brand-label { font-size: 0.75rem; font-weight: 700; color: #fff; margin-bottom: 6px; display: block;}
+        .select-custom { width: 100%; background: #05070c; border: 1px solid var(--card-border); color: #fff; padding: 11px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; outline: none; }
+        
+        .device-scroll-list { display: flex; flex-direction: column; gap: 8px; max-height: 190px; overflow-y: auto; border: 1px solid var(--card-border); padding: 8px; border-radius: 12px; background: #05070c; }
+        .device-option { display: flex; justify-content: space-between; align-items: center; padding: 10px; border: 1px solid transparent; border-radius: 10px; cursor: pointer; background: var(--card-bg); }
+        .device-option.selected { border-color: var(--accent); background: rgba(236, 72, 153, 0.05); }
+        .device-option h4 { font-size: 0.8rem; color: #fff; font-weight: 700; }
+        .device-option p { font-size: 0.65rem; color: var(--text-sub); }
+        .radio-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--card-border); display: flex; align-items: center; justify-content: center; }
+        .device-option.selected .radio-dot { border-color: var(--accent); }
+        .device-option.selected .radio-dot::after { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+
+        /* SENSITIVITY VIEW CHUẨN 6 MỤC */
+        .sensi-container { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .sensi-block { background: #05070c; border: 1px solid var(--card-border); padding: 10px; border-radius: 10px; display: flex; flex-direction: column; gap: 4px; }
+        .sensi-label { font-size: 0.7rem; color: var(--text-sub); font-weight: 600; }
+        .sensi-val { color: #f59e0b; font-weight: 800; font-size: 1rem; }
+
+        /* RAM BOOSTER GRAPHIC */
+        .ram-box { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 14px; }
+        .chart-container { display: flex; align-items: flex-end; justify-content: space-between; height: 55px; }
+        .chart-bar { width: 9px; background: linear-gradient(to top, var(--lightning-color), var(--accent)); border-radius: 2px 2px 0 0; transition: height 0.4s ease; }
+
+        /* NAVIGATION BOTTOM NAV */
+        .bottom-nav {
+            position: absolute; bottom: 0; left: 0; right: 0; height: 74px; background: #05070c;
+            border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; align-items: center; z-index: 999;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-sub); font-size: 0.65rem; font-weight: 700; cursor: pointer; gap: 4px; width: 60px; }
+        .nav-item i { font-size: 1.1rem; }
+        .nav-item.active { color: var(--lightning-color); text-shadow: 0 0 5px var(--lightning-color); }
+        
+        .nav-item.center-btn {
+            position: relative; top: -12px; background: linear-gradient(135deg, var(--lightning-color), var(--accent));
+            width: 52px; height: 52px; border-radius: 50%; color: white; justify-content: center;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+        }
+
+        /* BUTTON TOGGLE SWITCH */
+        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #374151; transition: .2s; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .2s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--lightning-color); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* --- KEYFRAMES HOẠT HỌA --- */
+        @keyframes lightningRotate { 100% { transform: rotate(360deg); } }
+        @keyframes rotateCrosshair { 100% { transform: rotate(360deg); } }
+        @keyframes toastIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <div class="app-container">
+        <div class="app-inner-layer"></div>
+
+        <div class="app-content-wrapper">
+            
+            <div id="login-screen">
+                <div class="cyber-avatar-wrapper">
+                    <div class="avatar-left-human"></div>
+                    <div class="avatar-right-crosshair"></div>
+                </div>
+
+                <h1 class="brand-title">NQuangTien VIP</h1>
+                <p class="brand-sub">Hệ thống đồng bộ viền sét Luxury</p>
+
+                <div class="login-card">
+                    <div class="input-wrapper">
+                        <i class="fas fa-key key-ico"></i>
+                        <input type="text" id="key-input" placeholder="Nhập Key VIP (NQT-281)">
+                        <i class="fas fa-paste paste-btn" onclick="pasteKey()"></i>
+                    </div>
+                    <button class="btn-activate" onclick="checkActivation()">KÍCH HOẠT SÉT NEON</button>
+                    <div class="error-box" id="error-box"><i class="fas fa-times-circle"></i> Mã key sai hoặc đã hết hạn sử dụng!</div>
+                </div>
+            </div>
+
+            <div id="main-app-screen">
+                <header class="app-header">
+                    <div class="header-title">
+                        <h1>NQuangTien Premium</h1>
+                        <span>Tia sét đang bật</span>
+                    </div>
+                    <div class="login-badge"><i class="fas fa-bolt"></i> LIGHTNING</div>
+                </header>
+
+                <div class="main-pages-viewport">
+                    
+                    <div id="page-home" class="tab-content active-page">
+                        <div class="section-title"><i class="fas fa-crosshairs"></i> CORE AIMBOT AUTOMATION</div>
+                        <div class="func-group">
+                            <div class="func-item" id="fn-aim">
+                                <div class="func-left"><i class="fas fa-bullseye"></i><div><div class="func-title">Auto Aimlock</div><div class="func-desc">Tự động ghim tâm vào người mục tiêu</div></div></div>
+                                <label class="switch"><input type="checkbox" onchange="toggleFeature(this, 'Auto Aimlock', 'fn-aim')"><span class="slider"></span></label>
+                            </div>
+                            <div class="func-item" id="fn-head">
+                                <div class="func-left"><i class="fas fa-crosshairs"></i><div><div class="func-title">Headshot Pro 95%</div><div class="func-desc">Tăng tỷ lệ kéo tâm trúng đầu tối đa</div></div></div>
+                                <label class="switch"><input type="checkbox" onchange="toggleFeature(this, 'Headshot Pro 95%', 'fn-head')"><span class="slider"></span></label>
+                            </div>
+                            <div class="func-item" id="fn-magic">
+                                <div class="func-left"><i class="fas fa-magic"></i><div><div class="func-title">Magic Bullet</div><div class="func-desc">Đạn tự động quét quỹ đạo tìm mục tiêu</div></div></div>
+                                <label class="switch"><input type="checkbox" onchange="toggleFeature(this, 'Magic Bullet', 'fn-magic')"><span class="slider"></span></label>
+                            </div>
+                        </div>
+
+                        <div class="section-title"><i class="fas fa-eye"></i> VISUAL ESP LOCATION</div>
+                        <div class="func-group">
+                            <div class="func-item" id="fn-esp-box">
+                                <div class="func-left"><i class="fas fa-vector-square"></i><div><div class="func-title">ESP Box 2D</div><div class="func-desc">Hiện khung vuông định vị vị trí kẻ địch</div></div></div>
+                                <label class="switch"><input type="checkbox" onchange="toggleFeature(this, 'ESP Box 2D', 'fn-esp-box')"><span class="slider"></span></label>
+                            </div>
+                            <div class="func-item" id="fn-esp-skull">
+                                <div class="func-left"><i class="fas fa-skull"></i><div><div class="func-title">ESP Skull Head</div><div class="func-desc">Hiện icon hộp sọ cảnh báo trên đầu mục tiêu</div></div></div>
+                                <label class="switch"><input type="checkbox" onchange="toggleFeature(this, 'ESP Skull Head', 'fn-esp-skull')"><span class="slider"></span></label>
+                            </div>
+                        </div>
+
+                        <div class="section-title"><i class="fas fa-meteor"></i> REGEDIT & BYPASS SYSTEM</div>
+                        <div class="func-group">
+                            <div class="func-item" id="fn-sens">
+                                <div class="func-left"><i class="fas fa-mouse-pointer"></i><div><div class="func-title">Sensitivity X3</div><div class="func-desc">Gia tốc cảm ứng mượt mà nhạy bén</div></div></div>
+                                <label class="switch"><input type="checkbox" onchange="toggleFeature(this, 'Sensitivity X3', 'fn-sens')"><span class="slider"></span></label>
+                            </div>
+                            <div class="func-item" id="fn-fps">
+                                <div class="func-left"><i class="fas fa-rocket"></i><div><div class="func-title">Unlock FPS Ultra</div><div class="func-desc">Mở khóa cấu hình tối đa 90/120 FPS</div></div></div>
+                                <label class="switch"><input type="checkbox" onchange="toggleFeature(this, 'Unlock FPS Ultra', 'fn-fps')"><span class="slider"></span></label>
+                            </div>
+                            <div class="func-item" id="fn-bypass">
+                                <div class="func-left"><i class="fas fa-shield-alt"></i><div><div class="func-title">Bypass Anti-Cheat</div><div class="func-desc">Chế độ ẩn danh bảo vệ tài khoản an toàn</div></div></div>
+                                <label class="switch"><input type="checkbox" onchange="toggleFeature(this, 'Bypass Anti-Cheat', 'fn-bypass')"><span class="slider"></span></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="page-info" class="tab-content">
+                        <div class="section-title"><i class="fas fa-mobile-alt"></i> CƠ SỞ DỮ LIỆU THIẾT BỊ HỆ THỐNG</div>
+                        <div class="brand-select-wrapper">
+                            <label class="brand-label">Chọn Hãng Điện Thoại:</label>
+                            <select class="select-custom" id="brand-select" onchange="updateDeviceList()">
+                                <option value="apple">Apple (iPhone)</option>
+                                <option value="samsung">Samsung</option>
+                                <option value="xiaomi">Xiaomi / Poco</option>
+                                <option value="oppo">Oppo / Realme</option>
+                                <option value="vivo">Vivo / iQOO</option>
+                            </select>
+                        </div>
+                        <div class="device-scroll-list" id="device-dynamic-list"></div>
+
+                        <div class="section-title" style="margin-top:15px;"><i class="fas fa-sliders-h"></i> THÔNG SỐ ĐỘ NHẠY ĐỒNG BỘ CHUẨN ĐẦY ĐỦ</div>
+                        
+                        <div class="sensi-container">
+                            <div class="sensi-block"><span class="sensi-label">Nhìn Xung Quanh</span><span class="sensi-val" id="v-gen">0</span></div>
+                            <div class="sensi-block"><span class="sensi-label">Red Dot Sight</span><span class="sensi-val" id="v-red">0</span></div>
+                            <div class="sensi-block"><span class="sensi-label">Ống Ngắm 2x</span><span class="sensi-val" id="v-2x">0</span></div>
+                            <div class="sensi-block"><span class="sensi-label">Ống Ngắm 4x</span><span class="sensi-val" id="v-4x">0</span></div>
+                            <div class="sensi-block"><span class="sensi-label">Sniper Scope</span><span class="sensi-val" id="v-snip">0</span></div>
+                            <div class="sensi-block"><span class="sensi-label">Nhìn Tự Do</span><span class="sensi-val" id="v-cam">0</span></div>
+                        </div>
+
+                        <div class="section-title"><i class="fas fa-chart-bar"></i> BIỂU ĐỒ GIẢI PHÓNG RAM QUÉT SÉT</div>
+                        <div class="ram-box"><div class="chart-container" id="chart"></div></div>
+                    </div>
+
+                    <div id="page-settings" class="tab-content">
+                        <div class="section-title">Hồ Sơ Thành Viên</div>
+                        <div class="func-item">
+                            <div class="func-left"><i class="fas fa-user-shield"></i><div><div class="func-title" style="color:#fff;">NQuangTien Premium</div><div class="func-desc">Cấp độ tài khoản: VVIP Admin</div></div></div>
+                        </div>
+                    </div>
+
+                    <div id="page-jerkill" class="tab-content">
+                        <div class="func-item" style="text-align:center; flex-direction:column; gap:10px; padding:20px;">
+                            <h3 style="color:var(--lightning-color);">NQuangTien Luxury Core</h3>
+                            <p style="font-size:0.75rem; color:var(--text-sub); line-height:1.5;">Mã nguồn tối ưu cấu hình phân phối độc quyền. Anti-swipe block hoàn chỉnh bảo vệ trải nghiệm chuyển trang.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <nav class="bottom-nav">
+                    <div class="nav-item active" onclick="teleportPage('page-home', event)"><i class="fas fa-home"></i><span>HOME</span></div>
+                    <div class="nav-item" onclick="teleportPage('page-info', event)"><i class="fas fa-info-circle"></i><span>INFO</span></div>
+                    <div class="nav-item center-btn" onclick="teleportPage('page-home', event)"><i class="fas fa-crown"></i></div>
+                    <div class="nav-item" onclick="teleportPage('page-settings', event)"><i class="fas fa-cog"></i><span>CÀI ĐẶT</span></div>
+                    <div class="nav-item" onclick="teleportPage('page-jerkill', event)"><i class="fas fa-skull"></i><span>JERKILL</span></div>
+                </nav>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // CƠ SỞ DỮ LIỆU ĐỘ NHẠY FULL CÁC DÒNG MÁY THEO YÊU CẦU CHUẨN 6 MỤC
+        const masterDeviceDatabase = {
+            apple: [
+                { name: "iPhone 15 Pro Max", desc: "A17 Pro Max Cấu Hình Siêu Cao", gen: 198, red: 112, x2: 100, x4: 95, snip: 65, cam: 200 },
+                { name: "iPhone 14 Pro Max", desc: "A16 Bionic iOS Mượt Mà", gen: 192, red: 108, x2: 98, x4: 90, snip: 60, cam: 190 },
+                { name: "iPhone 13 Pro Max", desc: "A15 Bionic Game Kéo Tâm", gen: 188, red: 104, x2: 95, x4: 88, snip: 58, cam: 185 },
+                { name: "iPhone 12 Pro Max", desc: "A14 Bionic Tối Ưu Tốt", gen: 185, red: 100, x2: 92, x4: 85, snip: 55, cam: 180 },
+                { name: "iPhone 11 Pro Max", desc: "A13 Siêu Phẩm Vuốt Mượt", gen: 201, red: 108, x2: 100, x4: 78, snip: 56, cam: 200 },
+                { name: "iPhone XS Max", desc: "Chip A12 Chuẩn Cũ Vuốt Nhẹ", gen: 182, red: 98, x2: 90, x4: 82, snip: 52, cam: 175 },
+                { name: "iPhone 8 Plus", desc: "A11 Kéo Tâm Huyền Thoại", gen: 180, red: 115, x2: 96, x4: 84, snip: 50, cam: 170 }
+            ],
+            samsung: [
+                { name: "Samsung Galaxy S24 Ultra", desc: "Snapdragon 8 Gen 3 Tần Số Quét Cao", gen: 182, red: 96, x2: 90, x4: 78, snip: 48, cam: 180 },
+                { name: "Samsung Galaxy S23 Ultra", desc: "Snapdragon 8 Gen 2 Gaming", gen: 178, red: 92, x2: 88, x4: 75, snip: 45, cam: 175 },
+                { name: "Samsung Galaxy S22 Ultra", desc: "Snapdragon 8 Gen 1 Mạnh Mẽ", gen: 174, red: 88, x2: 85, x4: 72, snip: 42, cam: 170 },
+                { name: "Samsung Galaxy S21 Ultra", desc: "Exynos 2100 / Snapdragon 888", gen: 170, red: 85, x2: 82, x4: 70, snip: 40, cam: 165 },
+                { name: "Samsung Galaxy A54 / A55", desc: "Dòng Máy Tầm Trung Cân Bằng", gen: 168, red: 82, x2: 80, x4: 68, snip: 38, cam: 160 }
+            ],
+            xiaomi: [
+                { name: "Xiaomi 14 Ultra", desc: "Snapdragon 8 Gen 3 Bản Mới", gen: 190, red: 105, x2: 96, x4: 84, snip: 52, cam: 195 },
+                { name: "Xiaomi 13 Pro", desc: "Snapdragon 8 Gen 2 Cực Khỏe", gen: 184, red: 100, x2: 92, x4: 80, snip: 50, cam: 185 },
+                { name: "Poco F5 / F5 Pro", desc: "Snapdragon Tối Ưu Đồ Họa Game", gen: 186, red: 102, x2: 94, x4: 82, snip: 48, cam: 190 },
+                { name: "Poco X6 Pro", desc: "Dimensity 8300 Ultra Cực Mượt", gen: 180, red: 98, x2: 90, x4: 78, snip: 46, cam: 180 },
+                { name: "Redmi Note 13 Pro+", desc: "Cân Bằng Đồ Họa Cảm Ứng", gen: 175, red: 95, x2: 88, x4: 75, snip: 44, cam: 175 }
+            ],
+            oppo: [
+                { name: "Oppo Find X7 Ultra", desc: "Cấu Hình Cao Cấp Chụp Ảnh Mượt", gen: 185, red: 98, x2: 92, x4: 80, snip: 45, cam: 185 },
+                { name: "Oppo Find X6 Pro", desc: "Snapdragon Flagship Nhạy", gen: 180, red: 94, x2: 88, x4: 76, snip: 42, cam: 180 },
+                { name: "Realme GT 5 Pro", desc: "Thế Hệ Chip Snapdragon Đỉnh Cao", gen: 188, red: 102, x2: 95, x4: 84, snip: 50, cam: 190 },
+                { name: "Realme Neo 5", desc: "Sạc Siêu Nhanh Màn 144Hz", gen: 182, red: 96, x2: 90, x4: 78, snip: 46, cam: 182 },
+                { name: "Oppo Reno 11 Pro", desc: "Dòng Reno Vuốt Nhẹ Êm", gen: 172, red: 90, x2: 84, x4: 72, snip: 40, cam: 170 }
+            ],
+            vivo: [
+                { name: "Vivo X100 Pro", desc: "Dimensity 9300 Core Đỉnh Cao", gen: 186, red: 100, x2: 92, x4: 82, snip: 48, cam: 188 },
+                { name: "iQOO 12 Pro", desc: "Snapdragon 8 Gen 3 Chip Gaming", gen: 194, red: 106, x2: 98, x4: 86, snip: 54, cam: 198 },
+                { name: "iQOO Neo 9", desc: "Mượt Mà Trải Nghiệm Thao Tác", gen: 188, red: 102, x2: 94, x4: 80, snip: 50, cam: 190 },
+                { name: "Vivo V30 Pro", desc: "Cảm Ứng Tầm Trung Điểm Nhắm Tốt", gen: 176, red: 92, x2: 86, x4: 74, snip: 42, cam: 175 }
+            ]
+        };
+
+        // HIỂN THỊ TOAST THÔNG BÁO XẾP CHỒNG ĐỘC LẬP
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.classList.add('toast-box');
+            toast.innerHTML = `<i class="fas fa-bolt"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            
+            setTimeout(() => { 
+                toast.style.opacity = '0'; 
+                toast.style.transform = 'translateY(-15px)';
+                setTimeout(() => toast.remove(), 300); 
+            }, 2200);
+        }
+
+        // CHUYỂN TRANG THEO KIỂU TELEPORT ĐỘC LẬP (ANTI-SWIPE)
+        function teleportPage(pageId, event) {
+            document.querySelectorAll('.tab-content').forEach(page => {
+                page.classList.remove('active-page');
+            });
+            document.getElementById(pageId).classList.add('active-page');
+
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            if(event) {
+                event.currentTarget.classList.add('active');
+            }
+        }
+
+        function toggleFeature(checkbox, featureName, itemId) {
+            const itemElement = document.getElementById(itemId);
+            if (checkbox.checked) {
+                itemElement.classList.add('enabled');
+                showToast("Đã kích hoạt: " + featureName);
+            } else {
+                itemElement.classList.remove('enabled');
+            }
+        }
+
+        function updateDeviceList() {
+            const selectedBrand = document.getElementById('brand-select').value;
+            const devices = masterDeviceDatabase[selectedBrand];
+            const listContainer = document.getElementById('device-dynamic-list');
+            listContainer.innerHTML = "";
+
+            devices.forEach((dev, index) => {
+                const isFirst = index === 0 ? "selected" : "";
+                const devItem = document.createElement('div');
+                devItem.className = `device-option ${isFirst}`;
+                devItem.onclick = function() { applyDeviceSensi(this, dev); };
+                devItem.innerHTML = `<div><h4>${dev.name}</h4><p>${dev.desc}</p></div><div class="radio-dot"></div>`;
+                listContainer.appendChild(devItem);
+
+                if(index === 0) { setSensiValues(dev.gen, dev.red, dev.x2, dev.x4, dev.snip, dev.cam); }
+            });
+        }
+
+        function applyDeviceSensi(element, devData) {
+            document.querySelectorAll('.device-option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            setSensiValues(devData.gen, devData.red, devData.x2, devData.x4, devData.snip, devData.cam);
+            showToast("Đã tối ưu hóa máy: " + devData.name);
+        }
+
+        function setSensiValues(gen, red, x2, x4, snip, cam) {
+            document.getElementById('v-gen').innerText = gen;
+            document.getElementById('v-red').innerText = red;
+            document.getElementById('v-2x').innerText = x2;
+            document.getElementById('v-4x').innerText = x4;
+            document.getElementById('v-snip').innerText = snip;
+            document.getElementById('v-cam').innerText = cam;
+        }
+
+        function checkActivation() {
+            const keyInput = document.getElementById('key-input').value.trim();
+            if (keyInput === "NQT-281") {
+                document.getElementById('login-screen').style.display = 'none';
+                const mainScreen = document.getElementById('main-app-screen');
+                mainScreen.style.display = 'flex';
+                mainScreen.style.opacity = '1';
+                
+                showToast("Đăng nhập hệ thống VIP thành công!");
+                updateDeviceList();
+                initRamChart();
+            } else {
+                document.getElementById('error-box').style.display = "flex";
+            }
+        }
+
+        function pasteKey() { document.getElementById('key-input').value = "NQT-281"; }
+
+        function initRamChart() {
+            const chart = document.getElementById('chart');
+            chart.innerHTML = "";
+            const bars = [];
+            for (let i = 0; i < 17; i++) {
+                const bar = document.createElement('div');
+                bar.classList.add('chart-bar');
+                bar.style.height = Math.floor(Math.random() * 35 + 15) + 'px';
+                chart.appendChild(bar);
+                bars.push(bar);
+            }
+            setInterval(() => {
+                bars.forEach(bar => { bar.style.height = Math.floor(Math.random() * 40 + 10) + 'px'; });
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
